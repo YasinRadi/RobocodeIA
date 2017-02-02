@@ -3,13 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package individual.methods;
+package generation;
+
+import individual.TankIA;
 
 /**
- *
+ * Class Handles the whole individual generation.
  * @author Yasin Radi
  */
-public interface Method {
+public class Generation {
     
-    public void method(Object... args);
+    private TankIA[] generation;
+    
+    
 }

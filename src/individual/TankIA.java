@@ -6,13 +6,18 @@
 package individual;
 
 import individual.methods.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import robocode.HitRobotEvent;
+import java.util.concurrent.ThreadLocalRandom;
+import robocode.BulletHitEvent;
+import robocode.HitByBulletEvent;
 import robocode.Robot;
+import robocode.ScannedRobotEvent;
 
 /**
- *
+ * Class Handles each individual statistics and behavior.
  * @author Yasin Radi
  */
 public class TankIA extends Robot{
@@ -33,6 +38,11 @@ public class TankIA extends Robot{
     private Map<String, Method> populationTemplate;
     
     /**
+     * Aux population template indexer.
+     */
+    private List<String> auxPopulationIdx;
+    
+    /**
      * Individual fitness value.
      */
     private double fitness;
@@ -40,7 +50,7 @@ public class TankIA extends Robot{
     /**
      * Genetic code of the individual.
      */
-    private HashMap<String, Method> genes;
+    private String[] genes;
     
     /**
      * Distance value that will be ran on each moving action.
@@ -64,9 +74,35 @@ public class TankIA extends Robot{
     
     public TankIA()
     {
+        /**
+         * Attributes initialization.
+         */
         this.fitness         = 0;
         this.rotationDegrees = 30;
+        this.genes = new String[GENETIC_LENGTH];
         
+        /**
+         * Template definition.
+         */
+        this.populationTemplate = new HashMap<>();
+        this.populationTemplate.put("AHEAD",  (args) -> this.ahead(this.getDistance()));
+        this.populationTemplate.put("BACK",   (args) -> this.back(this.getDistance()));
+        this.populationTemplate.put("FIRE",   (args) -> this.fire(TankIA.BULLET_POWER));
+        this.populationTemplate.put("TURN_R", (args) -> this.turnRight(this.getRotationDegrees()));
+        this.populationTemplate.put("TURN_L", (args) -> this.turnLeft(this.getRotationDegrees()));
+        this.populationTemplate.put("TURN_RADAR_R", (args) -> this.turnRadarRight(this.getRotationRadar()));
+        this.populationTemplate.put("TURN_RADAR_L", (args) -> this.turnRadarLeft(this.getRotationRadar()));
+        this.populationTemplate.put("TURN_GUN_R",   (args) -> this.turnGunRight(this.getRotationGun()));
+        this.populationTemplate.put("TURN_GUN_L",   (args) -> this.turnGunLeft(this.getRotationGun()));
+        this.populationTemplate.put("ON_ENEMY_HIT", (args) -> this.onBulletHit((BulletHitEvent) args[0]));
+        this.populationTemplate.put("ON_HIT_BY_ENEMY", (args) -> this.onHitByBullet((HitByBulletEvent) args[0]));
+        this.populationTemplate.put("ON_ENEMY_SCANED", (args) -> this.onScannedRobot((ScannedRobotEvent) args[0]));
+        
+        /**
+         * Template index retrieving.
+         */
+        auxPopulationIdx = new ArrayList<>();
+        this.populationTemplate.forEach((k, v) -> auxPopulationIdx.add(k));
     }
 
     public double getRotationRadar() {
@@ -117,29 +153,52 @@ public class TankIA extends Robot{
         this.fitness = fitness;
     }
 
-    public HashMap<String, Method> getGenes() {
+    public String[] getGenes() {
         return genes;
     }
 
-    public void setGenes(HashMap<String, Method> genes) {
+    public void setGenes(String[] genes) {
         this.genes = genes;
     }
     
-    
+    /**
+     * Random Genetic code generation and population.
+     */
     private void populate()
     {
-        this.setPopulationTemplate( new HashMap<>());
-        
-        this.getPopulationTemplate().put("AHEAD",  () -> this.ahead(this.getDistance()));
-        this.getPopulationTemplate().put("BACK",   () -> this.back(this.getDistance()));
-        this.getPopulationTemplate().put("FIRE",   () -> this.fire(TankIA.BULLET_POWER));
-        this.getPopulationTemplate().put("TURN_R", () -> this.turnRight(this.getRotationDegrees()));
-        this.getPopulationTemplate().put("TURN_L", () -> this.turnLeft(this.getRotationDegrees()));
-        this.getPopulationTemplate().put("TURN_RADAR_R", () -> this.turnRadarRight(this.getRotationRadar()));
-        this.getPopulationTemplate().put("TURN_RADAR_L", () -> this.turnRadarLeft(this.getRotationRadar()));
-        this.getPopulationTemplate().put("TURN_GUN_R",   () -> this.turnGunRight(this.getRotationGun()));
-        this.getPopulationTemplate().put("TURN_GUN_L",   () -> this.turnGunLeft(this.getRotationGun()));
-//        this.getPopulationTemplate().put("ON_ENEMY_HIT", () -> this.onHitRobot();
-        
+        for(int i = 0; i < GENETIC_LENGTH; i++)
+        {
+            this.genes[i] = this.auxPopulationIdx.get(ThreadLocalRandom.current().nextInt(0, auxPopulationIdx.size()));
+        }       
+    }
+    
+    /**
+     * Increase individual Fitness whenever hits an enemy.
+     * @param e 
+     */
+    @Override
+    public void onBulletHit(BulletHitEvent e)
+    {
+        this.fitness += 0.1;
+    }
+    
+    /**
+     * Decrease individual Fitness whenever gets hit by an enemy.
+     * @param e 
+     */
+    @Override
+    public void onHitByBullet(HitByBulletEvent e)
+    {
+        this.fitness -= 0.1;
+    }
+    
+    /**
+     * Make individual fire whenever an enemy is detected.
+     * @param e 
+     */
+    @Override
+    public void onScannedRobot(ScannedRobotEvent e)
+    {
+        this.fire(TankIA.BULLET_POWER);
     }
 }
