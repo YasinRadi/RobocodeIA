@@ -165,7 +165,7 @@ public class TankIA extends Robot{
     /**
      * Random Genetic code generation and population.
      */
-    private void populate()
+    public void populate()
     {
         for(int i = 0; i < GENETIC_LENGTH; i++)
         {
