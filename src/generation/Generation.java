@@ -53,6 +53,25 @@ public class Generation {
         
         return fittest;
     }
+    
+    /**
+     * Gets the second fittest individual of the generation.
+     * @return TankIA
+     */
+    public TankIA getSecondFittest()
+    {
+        TankIA secondFittest = this.getGeneration()[0];
+        
+        for(TankIA tank : this.getGeneration())
+        {
+            if(tank.getFitness() >= secondFittest.getFitness() && tank != this.getFittest())
+            {
+                secondFittest = tank;
+            }
+        }
+        
+        return secondFittest;
+    }
 
     /**
      * Gets the individual at the specified index.
