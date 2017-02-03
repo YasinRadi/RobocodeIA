@@ -79,6 +79,7 @@ public class TankIA extends Robot{
          */
         this.fitness         = 0;
         this.rotationDegrees = 30;
+        this.distance        = 20;
         this.genes = new String[GENETIC_LENGTH];
         
         /**
