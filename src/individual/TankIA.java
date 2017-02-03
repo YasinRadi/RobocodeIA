@@ -173,6 +173,26 @@ public class TankIA extends Robot{
     }
     
     /**
+     * Sets a gene at the specified index.
+     * @param index
+     * @param gene 
+     */
+    public void setGene(int index, String gene)
+    {
+        this.getGenes()[index] = gene;
+    }
+    
+    /**
+     * Gets the gene at the specified index.
+     * @param index
+     * @return 
+     */
+    public String getGene(int index)
+    {
+        return this.getGenes()[index];
+    }
+    
+    /**
      * Increase individual Fitness whenever hits an enemy.
      * @param e 
      */
