@@ -18,7 +18,7 @@ public class Generation {
     
     /**
      * Creates a generation of individuals and initializes them if needed.
-     * @param initialize 
+     * @param initialize boolean
      */
     public Generation(boolean initialize)
     {
