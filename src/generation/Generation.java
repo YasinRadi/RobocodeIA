@@ -13,7 +13,7 @@ import individual.TankIA;
  */
 public class Generation {
     
-    static int NUM_OF_INDIVIDUALS = 10;
+    public static int NUM_OF_INDIVIDUALS = 10;
     private TankIA[] generation;
     
     /**

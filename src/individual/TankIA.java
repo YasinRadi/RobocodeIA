@@ -40,7 +40,7 @@ public class TankIA extends Robot{
     /**
      * Aux population template indexer.
      */
-    private List<String> auxPopulationIdx;
+    public List<String> auxPopulationIdx;
     
     /**
      * Individual fitness value.
@@ -104,6 +104,14 @@ public class TankIA extends Robot{
          */
         auxPopulationIdx = new ArrayList<>();
         this.populationTemplate.forEach((k, v) -> auxPopulationIdx.add(k));
+    }
+
+    public List<String> getAuxPopulationIdx() {
+        return auxPopulationIdx;
+    }
+
+    public void setAuxPopulationIdx(List<String> auxPopulationIdx) {
+        this.auxPopulationIdx = auxPopulationIdx;
     }
 
     public double getRotationRadar() {
