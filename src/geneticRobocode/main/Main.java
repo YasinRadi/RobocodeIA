@@ -25,6 +25,7 @@ public class Main {
         }
         
         System.out.println("Solution found.");
+        System.out.println("Target Fitness: " + Fitness.MAX_FITNESS);
         System.out.println("Generation num: " + genCount);
         System.out.println("Fitness: " + gen.getFittest().getFitness());
     }
